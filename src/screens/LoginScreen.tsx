@@ -7,11 +7,10 @@ import { useNavigation } from '@react-navigation/native';
 const LoginScreen = () => {
 
   const navigation = useNavigation();
-
   const [email, setEmail] = useState('nnamdi.l@abc.com');
   const [password, setPassword] = useState('');
   const [rememberDevice, setRememberDevice] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(true); // Now text will be visible
   const [isBiometricSupported, setIsBiometricSupported] = useState(false);
   const [biometricAttempted, setBiometricAttempted] = useState(false);
 
@@ -96,17 +95,16 @@ const LoginScreen = () => {
         <View style={styles.passwordContainer}>
           <TextInput
             style={styles.passwordInput}
-            value={password}
+            value={showPassword ? '**********************' : password}
             onChangeText={setPassword}
-            secureTextEntry={!showPassword}
-            placeholder="***********"
+            placeholder="***********" 
           />
           <TouchableOpacity
             style={styles.eyeButton}
             onPress={toggleShowPassword}
           >
             <Text style={styles.eyeIcon}>
-              {showPassword ? '👁\u0336' : '👁'}
+              {showPassword ? '👁' : '🚫'}
             </Text>
           </TouchableOpacity>
         </View>
