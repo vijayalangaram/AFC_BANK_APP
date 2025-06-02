@@ -97,7 +97,7 @@ const LoginScreen = () => {
             style={styles.passwordInput}
             value={showPassword ? '**********************' : password}
             onChangeText={setPassword}
-            placeholder="***********" 
+            placeholder="***********"
           />
           <TouchableOpacity
             style={styles.eyeButton}

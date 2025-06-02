@@ -4,9 +4,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from './src/screens/LoginScreen';
 import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen'; // We'll create this
-import WelcomeScreen from './src/screens/WelcomeScreen';
+import PortfolioScreen from './src/screens/WelcomeScreen';
 import OTPValidation from "./src/screens/OTPValidation";
-
+ 
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -30,7 +30,7 @@ const App = () => {
               headerTintColor: '#fff',
             }}
           />
-          <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
+          <Stack.Screen name="WelcomeScreen" component={PortfolioScreen}  options={{ headerShown: false }} />
           <Stack.Screen name="OTPValidation" component={OTPValidation} options={{ headerShown: false }} />
         </Stack.Navigator>
       </SafeAreaView>

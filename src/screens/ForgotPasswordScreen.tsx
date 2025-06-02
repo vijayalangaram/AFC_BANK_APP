@@ -81,8 +81,7 @@ const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navigation 
   };
 
   const handleVerifyOtp = () => {
-    navigation.navigate('Login');
-      // navigation.navigate('WelcomeScreen');
+    navigation.navigate('Login'); 
   };
 
   return (
