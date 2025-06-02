@@ -39,8 +39,8 @@ const LoginScreen = () => {
   };
 
   const handleLogin = () => {
-    // Your login logic here
-    navigation.navigate('WelcomeScreen');
+    // Your login logic here    
+    navigation.navigate('OTPValidation');
   };
 
   const toggleShowPassword = () => {
