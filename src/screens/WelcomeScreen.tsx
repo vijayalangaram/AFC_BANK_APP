@@ -82,8 +82,8 @@ const accounts = [
   },
 ];
 
-const AccountCard = ({ item }) => (
-  <View style={styles.card}>
+const AccountCard = ({ item, onPress }) => (
+  <TouchableOpacity style={styles.card} onPress={onPress}>
     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
       <View>
         <Text style={styles.name}>{item.name}</Text>
@@ -96,16 +96,17 @@ const AccountCard = ({ item }) => (
         <Text style={styles.balance}>{item.balance}</Text>
       </View>
     </View>
-  </View>
+  </TouchableOpacity>
 );
+
 
 export default function PortfolioScreen() {
   const statusBarHeight = Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0;
- const navigation = useNavigation<DrawerNavigationProp<any>>();
+  const navigation = useNavigation<DrawerNavigationProp<any>>();
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#002A5C" /> 
+      <StatusBar barStyle="light-content" backgroundColor="#002A5C" />
 
       {/* Fixed Header */}
       <View style={[styles.fixedHeader, { paddingTop: statusBarHeight }]}>
@@ -124,11 +125,16 @@ export default function PortfolioScreen() {
         <Text style={styles.portfolioTitle}>Portfolio</Text>
         <FlatList
           data={accounts}
-          renderItem={AccountCard}
           keyExtractor={(item) => item.id}
           contentContainerStyle={{ paddingBottom: 20 }}
           showsVerticalScrollIndicator={false}
-        />
+          renderItem={({ item }) => (
+            <AccountCard
+              item={item}
+              onPress={() => navigation.navigate('SummaryScreen', { account: item })}
+            />
+          )}
+        /> 
       </View>
     </SafeAreaView>
   );

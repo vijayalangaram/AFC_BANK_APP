@@ -8,6 +8,9 @@ import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen';
 import PortfolioScreen from './src/screens/WelcomeScreen';
 import OTPValidation from './src/screens/OTPValidation';
 import CustomDrawer from './src/components/CustomDrawer';
+import SummaryScreen from './src/screens/SummaryScreen';
+import Instructions from './src/screens/InstructionsScreen';
+
 import {
   View,
   Text,
@@ -26,6 +29,8 @@ function MainDrawer() {
         screenOptions={{ headerShown: false }}
       >
         <Drawer.Screen name="Portfolio" component={PortfolioScreen} />
+        <Stack.Screen name="SummaryScreen" component={SummaryScreen} />
+        <Stack.Screen name="Instructions" component={Instructions} />
       </Drawer.Navigator>
     </>
   );
@@ -59,6 +64,7 @@ const App = () => {
           <Stack.Screen name="WelcomeScreen" component={MainDrawer} />
           {/* <Stack.Screen name="WelcomeScreen" component={PortfolioScreen} options={{ headerShown: false }} /> */}
           <Stack.Screen name="OTPValidation" component={OTPValidation} />
+          <Stack.Screen name="Instructions" component={MainDrawer} /> 
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
