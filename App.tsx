@@ -10,6 +10,7 @@ import OTPValidation from './src/screens/OTPValidation';
 import CustomDrawer from './src/components/CustomDrawer';
 import SummaryScreen from './src/screens/SummaryScreen';
 import Instructions from './src/screens/InstructionsScreen';
+import StatementScreen from './src/screens/StatementScreen';
 
 import {
   View,
@@ -64,7 +65,8 @@ const App = () => {
           <Stack.Screen name="WelcomeScreen" component={MainDrawer} />
           {/* <Stack.Screen name="WelcomeScreen" component={PortfolioScreen} options={{ headerShown: false }} /> */}
           <Stack.Screen name="OTPValidation" component={OTPValidation} />
-          <Stack.Screen name="Instructions" component={MainDrawer} /> 
+          <Stack.Screen name="Instructions" component={MainDrawer} />
+          <Stack.Screen name="Statement" component={StatementScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

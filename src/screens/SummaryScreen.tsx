@@ -9,11 +9,11 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useRoute } from '@react-navigation/native';
-import { useNavigation } from '@react-navigation/native'; 
+import { useNavigation } from '@react-navigation/native';
 
 
 const SummaryScreen = ({ route }) => {
-   const navigation = useNavigation();
+  const navigation = useNavigation();
 
   // const route = useRoute();
   // const { account } = route.params;
@@ -126,12 +126,12 @@ const SummaryScreen = ({ route }) => {
           </View>
         ))}
 
-        {/* Bottom Tabs */}
+        {/* Bottom Tabs */} 
         <View style={styles.tabBar}>
           <Tab label="Summary" active />
           {/* <Tab label="Instructions" /> */}
-         <Tab label="Instructions" onPress={() => navigation.navigate('Instructions')} />
-          <Tab label="Statement" />
+          <Tab label="Instructions" onPress={() => navigation.navigate('Instructions')} />
+          <Tab label="Statement" onPress={() => navigation.navigate('Statement')} />
           <Tab label="Limit Range" />
         </View>
       </ScrollView>
@@ -147,10 +147,10 @@ const Tab = ({ label, active, onPress }: { label: string; active?: boolean; onPr
         label === 'Summary'
           ? 'grid-outline'
           : label === 'Instructions'
-          ? 'document-text-outline'
-          : label === 'Statement'
-          ? 'document-outline'
-          : 'options-outline'
+            ? 'document-text-outline'
+            : label === 'Statement'
+              ? 'document-outline'
+              : 'options-outline'
       }
       size={20}
       color={active ? 'white' : '#00205B'}
@@ -158,7 +158,7 @@ const Tab = ({ label, active, onPress }: { label: string; active?: boolean; onPr
     <Text style={[styles.tabText, active && { color: 'white' }]}>{label}</Text>
   </TouchableOpacity>
 );
- 
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: 'white' },
