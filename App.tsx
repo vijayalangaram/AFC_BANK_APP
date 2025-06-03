@@ -12,7 +12,7 @@ import {
   View,
   Text,
   FlatList,
-  StyleSheet
+  StyleSheet, Image
 } from 'react-native';
 
 const Drawer = createDrawerNavigator();
@@ -22,14 +22,10 @@ function MainDrawer() {
   return (
     <>
       <Drawer.Navigator
-        // drawerContent={(props) => <CustomDrawer {...props} />}
+        drawerContent={(props) => <CustomDrawer {...props} />}
         screenOptions={{ headerShown: false }}
       >
-        {/* <Image source={require('./src/screens/images.png')} style={styles.image} /> */}
-        {/* <View style={styles.profile}>
-        <Image source={require('./src/screens/images.png')} style={styles.image} />
-      </View>  */}
-        <Drawer.Screen name="Welcome Screen" component={PortfolioScreen} />
+        <Drawer.Screen name="Portfolio" component={PortfolioScreen} />
       </Drawer.Navigator>
     </>
   );
@@ -58,6 +54,7 @@ const App = () => {
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={LoginScreen} />
+          {/* <Stack.Screen name="Login" component={MainDrawer} /> */}
           <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
           <Stack.Screen name="WelcomeScreen" component={MainDrawer} />
           {/* <Stack.Screen name="WelcomeScreen" component={PortfolioScreen} options={{ headerShown: false }} /> */}

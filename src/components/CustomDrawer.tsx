@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { Image, View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { DrawerContentComponentProps } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -11,13 +11,18 @@ const accounts = [
 ];
 
 const CustomDrawer = ({ navigation }: DrawerContentComponentProps) => {
+
+
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.logoText}>Africa Finance Corporation</Text>
+        {/* <Image source={require('../screens/images.png')} style={styles.image} /> */}
+        <Text style={styles.logoText}>Africa Finance Corporation </Text>
         <TouchableOpacity onPress={() => navigation.closeDrawer()}>
           <Icon name="close" size={28} color="#fff" />
         </TouchableOpacity>
+
       </View>
 
       <View style={styles.content}>
@@ -33,10 +38,26 @@ const CustomDrawer = ({ navigation }: DrawerContentComponentProps) => {
           </View>
         ))}
 
+        {/* 
         <TouchableOpacity style={styles.logoutBtn}>
-          <Text style={styles.logoutText}>Logout</Text>
+          <Text style={styles.logoutText}>Logout </Text>
           <Icon name="log-out-outline" size={20} color="#00205B" />
+        </TouchableOpacity> */}
+
+        <TouchableOpacity
+          style={styles.logoutBtn}
+          onPress={() => {
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'Login' }],
+            });
+          }}
+        >
+          <Text style={styles.logoutText}>Logout </Text>
+          {/* <Icon name="log-out-outline" size={20} color="#00205B" /> */}
         </TouchableOpacity>
+
+
       </View>
     </ScrollView>
   );
@@ -45,6 +66,12 @@ const CustomDrawer = ({ navigation }: DrawerContentComponentProps) => {
 export default CustomDrawer;
 
 const styles = StyleSheet.create({
+  image: {
+    width: 200,
+    height: 100,
+    resizeMode: 'contain',
+    alignSelf: 'center',
+  },
   container: { flexGrow: 1, backgroundColor: '#fff' },
   header: {
     backgroundColor: '#00205B',
