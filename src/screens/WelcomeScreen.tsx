@@ -10,6 +10,8 @@ import {
   TouchableOpacity,
   Platform,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
 
 const HEADER_HEIGHT = 84;
 
@@ -99,18 +101,22 @@ const AccountCard = ({ item }) => (
 
 export default function PortfolioScreen() {
   const statusBarHeight = Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0;
+ const navigation = useNavigation<DrawerNavigationProp<any>>();
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#002A5C" />
+      <StatusBar barStyle="light-content" backgroundColor="#002A5C" /> 
 
       {/* Fixed Header */}
       <View style={[styles.fixedHeader, { paddingTop: statusBarHeight }]}>
-        <TouchableOpacity><Text style={styles.menu}>☰</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.openDrawer()}>
+          <Text style={styles.menu}>☰</Text>
+        </TouchableOpacity>
+        {/* <TouchableOpacity><Text style={styles.menu}>☰</Text></TouchableOpacity> */}
         <View style={styles.profile}>
           <Text style={styles.signatory}>Signatory</Text>
           <Image source={require('./images.png')} style={styles.image} />
-        </View> 
+        </View>
       </View>
 
       {/* Content */}

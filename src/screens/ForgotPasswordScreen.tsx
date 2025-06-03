@@ -78,8 +78,7 @@ const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navigation 
         otpInputRefs.current[index - 1]?.focus();
       }
     }
-  };
-
+  }; 
   const handleVerifyOtp = () => {
     navigation.navigate('Login'); 
   };
