@@ -10,11 +10,14 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^2.1.2",
     "@react-native-community/checkbox": "^0.5.20",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-navigation/drawer": "^7.4.1",
     "@react-navigation/native": "^7.1.10",
     "@react-navigation/stack": "^7.3.2",
+    "axios": "^1.9.0",
+    "axios-debug-log": "^1.0.0",
     "react": "19.0.0",
     "react-native": "0.79.2",
     "react-native-biometrics": "^3.0.1",

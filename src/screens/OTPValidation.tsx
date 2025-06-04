@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, SafeAreaView, TextInput, Platform } from 'react-native';
 import SMSRetriever, { SmsListenerEvent } from 'react-native-sms-retriever';
+import { verifyOtp, login } from '../api/auth';
+import { setAuthToken } from '../utils/auth';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { Alert } from 'react-native';
+
 
 interface ForgotPasswordScreenProps {
   navigation: any; // Replace with your proper navigation type
@@ -11,6 +16,10 @@ const OTPValidation: React.FC<ForgotPasswordScreenProps> = ({ navigation }) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true);
   const [otpError, setOtpError] = useState<string>('');
   const otpInputRefs = useRef<Array<TextInput | null>>([]);
+  const route = useRoute();
+  const { loginId, email, password } = route.params as any;
+
+  console.log(loginId, email, " loginId, email ")
 
   // Initialize refs array
   useEffect(() => {
@@ -80,8 +89,60 @@ const OTPValidation: React.FC<ForgotPasswordScreenProps> = ({ navigation }) => {
     }
   };
 
-  const handleVerifyOtp = () => {
-     navigation.navigate('WelcomeScreen'); 
+  // const handleVerifyOtp = () => {
+  //    navigation.navigate('WelcomeScreen'); 
+  // }; 
+
+
+  const handleVerifyOtp = async () => {
+    // debugger
+
+    try {
+      const otpcombine = otp && otp.join('');
+      console.log(loginId, email, otpcombine, "loginId, email, otp")
+
+      const res = await verifyOtp(loginId, email, otpcombine);
+      console.log(res.data, "res.data")
+
+      if (res.data.success) {
+        const token = res.headers.authorization || res.headers.Authorization;
+        if (token) {
+          await setAuthToken(token);
+        }
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'WelcomeScreen' }],
+        });
+      } else {
+        Alert.alert('Invalid OTP', res.data.message || '');
+      }
+    } catch (err) {
+      console.error(err);
+      Alert.alert('OTP Error', 'Verification failed.');
+    }
+  };
+
+  const handleResendOtp = async () => {
+    // debugger
+    setOtp(['', '', '', '', '', ''])
+    try {
+      const res = await login(email, password);
+      console.log(res, "res123") 
+      // console.warn("Something looks off!");
+      // if (res.data?.success && res.data?.result) {
+      //      console.log(res.data, "res123")
+      //   navigation.navigate('OTPValidation', {
+      //     loginId: res.data.result,
+      //     email,
+      //     password
+      //   });
+      // } else { 
+      //   Alert.alert('Login failed', res.data.message || 'Unknown error');
+      // }
+    } catch (err) {
+      console.error(err);
+      // Alert.alert('Login error', 'Something went wrong.');
+    }
   };
 
   return (
@@ -109,7 +170,7 @@ const OTPValidation: React.FC<ForgotPasswordScreenProps> = ({ navigation }) => {
           {otp.map((digit, index) => (
             <TextInput
               key={index}
-              ref={(ref) => (otpInputRefs.current[index] = ref)} 
+              ref={(ref) => (otpInputRefs.current[index] = ref)}
               style={[styles.otpBox, otpError ? styles.otpBoxError : null]}
               value={digit}
               onChangeText={(text: string) => handleOtpChange(text, index)}
@@ -127,7 +188,13 @@ const OTPValidation: React.FC<ForgotPasswordScreenProps> = ({ navigation }) => {
         </View>
         {otpError ? <Text style={styles.errorText}>{otpError}</Text> : null}
 
-        <TouchableOpacity>
+        {/* <TouchableOpacity>
+          <Text style={styles.resendText}>
+            Didn't receive the OTP? <Text style={styles.resendLink}>Resend OTP</Text>
+          </Text>
+        </TouchableOpacity> */}
+
+        <TouchableOpacity onPress={handleResendOtp}>
           <Text style={styles.resendText}>
             Didn't receive the OTP? <Text style={styles.resendLink}>Resend OTP</Text>
           </Text>
@@ -149,7 +216,7 @@ const OTPValidation: React.FC<ForgotPasswordScreenProps> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff', 
+    backgroundColor: '#fff',
   },
   contentimagetop: {
     padding: 10,

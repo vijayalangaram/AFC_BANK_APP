@@ -11,13 +11,7 @@ import CustomDrawer from './src/components/CustomDrawer';
 import SummaryScreen from './src/screens/SummaryScreen';
 import Instructions from './src/screens/InstructionsScreen';
 import StatementScreen from './src/screens/StatementScreen';
-
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet, Image
-} from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image } from 'react-native';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -70,31 +64,6 @@ const App = () => {
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
-
-    // <NavigationContainer>
-    //   <SafeAreaView style={{ flex: 1 }}>
-    //     <Stack.Navigator initialRouteName="Login">
-    //       <Stack.Screen
-    //         name="Login"
-    //         component={LoginScreen}
-    //         options={{ headerShown: false }}
-    //       />
-    //       <Stack.Screen
-    //         name="ForgotPassword"
-    //         component={ForgotPasswordScreen}
-    //         options={{
-    //           title: 'Forgot Password',
-    //           headerStyle: {
-    //             backgroundColor: '#00205B',
-    //           },
-    //           headerTintColor: '#fff',
-    //         }}
-    //       />
-    //       <Stack.Screen name="WelcomeScreen" component={PortfolioScreen}  options={{ headerShown: false }} />
-    //       <Stack.Screen name="OTPValidation" component={OTPValidation} options={{ headerShown: false }} />
-    //     </Stack.Navigator>
-    //   </SafeAreaView>
-    // </NavigationContainer>
   );
 };
 export default App;

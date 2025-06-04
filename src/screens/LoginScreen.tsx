@@ -3,19 +3,20 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaView, Alert } from 'react-native';
 import ReactNativeBiometrics from 'react-native-biometrics';
 import { useNavigation } from '@react-navigation/native';
+import { login } from '../api/auth';
 
 const LoginScreen = () => {
 
   const navigation = useNavigation();
-  const [email, setEmail] = useState('nnamdi.l@abc.com');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('vijayalangaram.t@synergech.com');
+  const [password, setPassword] = useState('Vijay@337890');
   const [rememberDevice, setRememberDevice] = useState(false);
   const [showPassword, setShowPassword] = useState(true); // Now text will be visible
   const [isBiometricSupported, setIsBiometricSupported] = useState(false);
   const [biometricAttempted, setBiometricAttempted] = useState(false);
 
   useEffect(() => {
-    checkBiometricSupport();
+    // checkBiometricSupport(); 
   }, []);
 
   useEffect(() => {
@@ -38,9 +39,31 @@ const LoginScreen = () => {
     }
   };
 
-  const handleLogin = () => {
-    // Your login logic here    
-    navigation.navigate('OTPValidation');
+  // const handleLogin = () => {
+  //   // Your login logic here    
+  //   navigation.navigate('OTPValidation');
+  // };
+
+  const handleLogin = async () => {
+    // debugger 
+    try {
+      const res = await login(email, password);
+      console.log(res, "res123")
+      // console.warn("Something looks off!");
+      if (res.data?.success && res.data?.result) {
+        console.log(res.data, "res123")
+        navigation.navigate('OTPValidation', {
+          loginId: res.data.result,
+          email,
+          password
+        });
+      } else {
+        Alert.alert('Login failed', res.data.message || 'Unknown error');
+      }
+    } catch (err) {
+      console.error(err);
+      Alert.alert('Login error', 'Something went wrong.');
+    }
   };
 
   const toggleShowPassword = () => {

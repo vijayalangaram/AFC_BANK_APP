@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { fetchAccountSummary } from '../api/account';
 import {
   View,
   Text,
@@ -15,85 +16,25 @@ import { DrawerNavigationProp } from '@react-navigation/drawer';
 
 const HEADER_HEIGHT = 84;
 
-const accounts = [
-  {
-    id: '1',
-    name: 'Energy Capital Holdings',
-    number: '7087187300405',
-    currency: 'USD',
-    debits: '$5,000,000',
-    balance: '$20,003,000',
-  },
-  {
-    id: '2',
-    name: 'Hydro Carbon Finance',
-    number: '7087187300465',
-    currency: 'USD',
-    debits: '$5,000,000',
-    balance: '$16,023,000',
-  },
-  {
-    id: '3',
-    name: 'Africa Finance Ltd',
-    number: '7087187300415',
-    currency: 'USD',
-    debits: '$5,000,000',
-    balance: '$2,300,000', // corrected format
-  },
-  {
-    id: '4',
-    name: 'Energy Capital Holdings',
-    number: '7087187300425',
-    currency: 'USD',
-    debits: '$5,000,000',
-    balance: '$20,003,000',
-  },
-  {
-    id: '3',
-    name: 'Africa Finance Ltd',
-    number: '7087187300415',
-    currency: 'USD',
-    debits: '$5,000,000',
-    balance: '$2,300,000', // corrected format
-  },
-  {
-    id: '4',
-    name: 'Energy Capital Holdings',
-    number: '7087187300425',
-    currency: 'USD',
-    debits: '$5,000,000',
-    balance: '$20,003,000',
-  },
-  {
-    id: '3',
-    name: 'Africa Finance Ltd',
-    number: '7087187300415',
-    currency: 'USD',
-    debits: '$5,000,000',
-    balance: '$2,300,000', // corrected format
-  },
-  {
-    id: '4',
-    name: 'Energy Capital Holdings',
-    number: '7087187300425',
-    currency: 'USD',
-    debits: '$5,000,000',
-    balance: '$20,003,000',
-  },
-];
-
 const AccountCard = ({ item, onPress }) => (
   <TouchableOpacity style={styles.card} onPress={onPress}>
     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-      <View>
-        <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.subtext}>{item.number}- ({item.currency})</Text>
+      <View>    
+        <Text
+          style={styles.name}
+          numberOfLines={2}
+          ellipsizeMode="tail"
+        >
+          {item.countryName}
+        </Text>
+
+        <Text style={styles.subtext}>{item.accountId}- ({item.currencyType})</Text>
         <Text style={styles.debitLabel}>Total Debits</Text>
-        <Text style={styles.debitAmount}>{item.debits}</Text>
+        <Text style={styles.debitAmount}>{item.totalDebits}</Text>
       </View>
       <View style={styles.balanceBox}>
         <Text style={styles.balanceLabel}>Available Balance</Text>
-        <Text style={styles.balance}>{item.balance}</Text>
+        <Text style={styles.balance}>{item.availableBalance}</Text>
       </View>
     </View>
   </TouchableOpacity>
@@ -101,8 +42,25 @@ const AccountCard = ({ item, onPress }) => (
 
 
 export default function PortfolioScreen() {
+  const [accounts, setAccounts] = useState([]);
+
   const statusBarHeight = Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0;
   const navigation = useNavigation<DrawerNavigationProp<any>>();
+
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const res = await fetchAccountSummary();
+        console.log(res, "res")
+        setAccounts(res.data.data || []);
+      } catch (err) {
+        console.error('Fetch error', err);
+      }
+    };
+
+    getData();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -134,7 +92,7 @@ export default function PortfolioScreen() {
               onPress={() => navigation.navigate('SummaryScreen', { account: item })}
             />
           )}
-        /> 
+        />
       </View>
     </SafeAreaView>
   );
