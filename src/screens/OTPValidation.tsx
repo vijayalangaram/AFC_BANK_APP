@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, SafeAreaView, TextInput, Platform } from 'react-native';
+import {
+  View, Text, TouchableOpacity, StyleSheet, Image, SafeAreaView, TextInput, Platform, Clipboard,
+  ActivityIndicator, Alert
+} from 'react-native';
 import SMSRetriever, { SmsListenerEvent } from 'react-native-sms-retriever';
 import { verifyOtp, login } from '../api/auth';
 import { setAuthToken } from '../utils/auth';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { Alert } from 'react-native';
+
 
 
 interface ForgotPasswordScreenProps {
@@ -18,13 +21,27 @@ const OTPValidation: React.FC<ForgotPasswordScreenProps> = ({ navigation }) => {
   const otpInputRefs = useRef<Array<TextInput | null>>([]);
   const route = useRoute();
   const { loginId, email, password } = route.params as any;
+  const [isLoading, setIsLoading] = useState<boolean>(false); // Add loading state
 
-  console.log(loginId, email, " loginId, email ")
+  console.log(loginId, email, " loginId, email ");
 
   // Initialize refs array
   useEffect(() => {
     otpInputRefs.current = otpInputRefs.current.slice(0, otp.length);
   }, [otp]);
+
+  // Add this effect to automatically submit when last digit is entered
+  useEffect(() => {
+    const isComplete = otp.every(digit => digit !== '');
+    setIsButtonDisabled(!isComplete);
+    setOtpError('');
+    // Auto-submit when last digit is entered
+    if (isComplete && otp[5] !== '') {
+      handleVerifyOtp();
+    }
+  }, [otp]);
+
+
 
   // Check if OTP is complete
   useEffect(() => {
@@ -77,6 +94,11 @@ const OTPValidation: React.FC<ForgotPasswordScreenProps> = ({ navigation }) => {
       newOtp[index] = text;
       setOtp(newOtp);
 
+      // Move to next only if a single digit is entered
+      if (text.length === 1 && index < 5) {
+        otpInputRefs.current[index + 1]?.focus();
+      }
+
       // Auto focus to next input if a digit was entered
       if (text && index < 5) {
         otpInputRefs.current[index + 1]?.focus();
@@ -89,21 +111,14 @@ const OTPValidation: React.FC<ForgotPasswordScreenProps> = ({ navigation }) => {
     }
   };
 
-  // const handleVerifyOtp = () => {
-  //    navigation.navigate('WelcomeScreen'); 
-  // }; 
-
-
   const handleVerifyOtp = async () => {
+    setIsLoading(true);
     // debugger
-
     try {
       const otpcombine = otp && otp.join('');
       console.log(loginId, email, otpcombine, "loginId, email, otp")
-
       const res = await verifyOtp(loginId, email, otpcombine);
       console.log(res.data, "res.data")
-
       if (res.data.success) {
         const token = res.headers.authorization || res.headers.Authorization;
         if (token) {
@@ -119,6 +134,8 @@ const OTPValidation: React.FC<ForgotPasswordScreenProps> = ({ navigation }) => {
     } catch (err) {
       console.error(err);
       Alert.alert('OTP Error', 'Verification failed.');
+    } finally {
+      setIsLoading(false); // Stop loading regardless of success/error
     }
   };
 
@@ -127,7 +144,7 @@ const OTPValidation: React.FC<ForgotPasswordScreenProps> = ({ navigation }) => {
     setOtp(['', '', '', '', '', ''])
     try {
       const res = await login(email, password);
-      console.log(res, "res123") 
+      console.log(res, "res123")
       // console.warn("Something looks off!");
       // if (res.data?.success && res.data?.result) {
       //      console.log(res.data, "res123")
@@ -157,7 +174,7 @@ const OTPValidation: React.FC<ForgotPasswordScreenProps> = ({ navigation }) => {
         <Text style={styles.text}>
           We have sent a One-Time Password (OTP){'\n'}
           To your Registered Email Address{'\n'}
-          n******di@abc.com
+          {email}
         </Text>
 
         <Text style={styles.text}>
@@ -178,6 +195,7 @@ const OTPValidation: React.FC<ForgotPasswordScreenProps> = ({ navigation }) => {
               maxLength={1}
               textAlign="center"
               autoFocus={index === 0}
+              editable={!isLoading}
               onKeyPress={({ nativeEvent }) => {
                 if (nativeEvent.key === 'Backspace' && !digit && index > 0) {
                   otpInputRefs.current[index - 1]?.focus();
@@ -186,14 +204,17 @@ const OTPValidation: React.FC<ForgotPasswordScreenProps> = ({ navigation }) => {
             />
           ))}
         </View>
+
+        {/* Loading indicator */}
+        {isLoading && (
+          <ActivityIndicator
+            size="large"
+            color="#0071CF"
+            style={styles.loader}
+          />
+        )}
+
         {otpError ? <Text style={styles.errorText}>{otpError}</Text> : null}
-
-        {/* <TouchableOpacity>
-          <Text style={styles.resendText}>
-            Didn't receive the OTP? <Text style={styles.resendLink}>Resend OTP</Text>
-          </Text>
-        </TouchableOpacity> */}
-
         <TouchableOpacity onPress={handleResendOtp}>
           <Text style={styles.resendText}>
             Didn't receive the OTP? <Text style={styles.resendLink}>Resend OTP</Text>
@@ -201,19 +222,32 @@ const OTPValidation: React.FC<ForgotPasswordScreenProps> = ({ navigation }) => {
         </TouchableOpacity>
 
         <View style={styles.divider} />
-        <TouchableOpacity
-          style={[styles.loginButton, isButtonDisabled ? styles.disabledButton : null]}
-          onPress={handleVerifyOtp}
-          disabled={isButtonDisabled}
-        >
-          <Text style={styles.loginButtonText}>Verify OTP</Text>
-        </TouchableOpacity>
+        {!isLoading && (
+          <TouchableOpacity
+            style={[styles.loginButton, isButtonDisabled ? styles.disabledButton : null]}
+            onPress={handleVerifyOtp}
+            disabled={isButtonDisabled || isLoading}
+          >
+            <Text style={styles.loginButtonText}>Verify OTP</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </SafeAreaView>
   );
 };
-
 const styles = StyleSheet.create({
+  loader: {
+    marginVertical: 20,
+  },
+  loginButton: {
+    backgroundColor: '#0071CF',
+    height: 50,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    marginTop: 10, // Add some spacing 
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
