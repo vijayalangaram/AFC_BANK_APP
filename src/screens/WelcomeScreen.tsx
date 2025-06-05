@@ -235,9 +235,16 @@ const formatCurrency = (currencyType, amount) => {
 
 const AccountCard = ({ item, onPress }) => (
   <TouchableOpacity style={styles.card} onPress={onPress}>
+
+    {/* Arrow in top right corner */}
+    <View style={styles.topRightArrow}>
+      <Text style={styles.arrow}>→</Text>
+       {/* <Text >></Text> */}
+    </View>
+
     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
       <View style={styles.accountInfo}>
-        <Text style={styles.name} numberOfLines={2} ellipsizeMode="tail">
+        <Text style={styles.name} numberOfLines={4} ellipsizeMode="tail">
           {item.countryName}
         </Text>
         <Text style={styles.subtext}>{item.accountId}- ({item.currencyType})</Text>
@@ -250,13 +257,17 @@ const AccountCard = ({ item, onPress }) => (
           {getCurrencySymbol(item.currencyType)} {item.totalDebits}
         </Text> */}
       </View>
-      <View style={styles.balanceBox}>
-        <Text style={styles.balanceLabel}>Available Balance</Text>
-        {/* <Text style={styles.balance}> {item.availableBalance}</Text> */}
-        <Text style={styles.balance}>
-          {formatCurrency(item.currencyType, item.availableBalance)}
-        </Text>
+      <View style={styles.rightContainer}>
+        <View style={styles.balanceBox}>
+          <Text style={styles.balanceLabel}>Available Balance</Text>
+          {/* <Text style={styles.balance}> {item.availableBalance}</Text> */}
+          <Text style={styles.balance}>
+            {formatCurrency(item.currencyType, item.availableBalance)}
+          </Text>
+        </View>
       </View>
+
+
     </View>
   </TouchableOpacity>
 );
@@ -314,7 +325,7 @@ export default function PortfolioScreen() {
 
       {/* Content */}
       <View style={styles.content}>
-        <Text style={styles.portfolioTitle}>Portfolio.</Text>
+        <Text style={styles.portfolioTitle}>Portfolio</Text>
         <FlatList
           data={accounts}
           keyExtractor={(item) => item.id}
@@ -334,6 +345,20 @@ export default function PortfolioScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
+  rightContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  topRightArrow: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    zIndex: 1,
+  },
+  arrow: {
+    fontSize: 18,
+    color: '#002A5C',
+  },
   loader: {
     marginVertical: 20,
   },
@@ -387,7 +412,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#002A5C',
+    color: '#00205b',
     marginBottom: 4,
   },
   subtext: {
@@ -407,7 +432,8 @@ const styles = StyleSheet.create({
   },
   balanceBox: {
     backgroundColor: '#DFF6DF',
-    padding: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
     borderRadius: 10,
     alignItems: 'flex-end',
     minWidth: 120,
@@ -415,7 +441,7 @@ const styles = StyleSheet.create({
   },
   balanceLabel: {
     fontSize: 12,
-    color: '#333',
+    color: '#006400',
     marginBottom: 4,
   },
   balance: {
