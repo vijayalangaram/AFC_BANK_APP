@@ -12,6 +12,7 @@ import SummaryScreen from './src/screens/SummaryScreen';
 import Instructions from './src/screens/InstructionsScreen';
 import StatementScreen from './src/screens/StatementScreen';
 import { View, Text, FlatList, StyleSheet, Image } from 'react-native';
+import { navigationRef } from './src/api/axios'; // Import the ref from axios config
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -51,7 +52,7 @@ const styles = StyleSheet.create({
 const App = () => {
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
+      <NavigationContainer ref={navigationRef}>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={LoginScreen} />
           {/* <Stack.Screen name="Login" component={MainDrawer} /> */}

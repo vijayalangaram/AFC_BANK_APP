@@ -1,7 +1,12 @@
+import React from 'react'; // Add this import
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_BASE_URL } from '../config/constants';
 import { Alert } from 'react-native';
+import { NavigationContainerRef } from '@react-navigation/native';
+
+// Create a ref to hold the navigation object
+export const navigationRef = React.createRef();
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -13,7 +18,7 @@ const api = axios.create({
 // Add token to requests
 api.interceptors.request.use(async (config) => {
   // debugger
-  console.log('Starting Request', config); 
+  console.log('Starting Request', config);
   const token = await AsyncStorage.getItem('authToken');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -27,8 +32,20 @@ api.interceptors.response.use(
   async (error) => {
     if (error.response?.status === 401) {
       await AsyncStorage.removeItem('authToken');
-      Alert.alert('Session Expired', 'Please login again.');
-      // You must use navigation here or trigger a logout flow
+      Alert.alert('Session Expired', 'Please click OK to login again.', [
+        {
+          text: 'OK',
+          onPress: () => {
+            // Navigate to Login screen if navigationRef is available
+            if (navigationRef.current) {
+              navigationRef.current.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+              });
+            }
+          },
+        },
+      ]);
     }
     return Promise.reject(error);
   }
