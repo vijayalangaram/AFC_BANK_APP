@@ -313,7 +313,6 @@ export default function PortfolioScreen() {
         </View>
       </View>
 
-
       {/* Loading indicator */}
       {isLoading && (
         <ActivityIndicator

@@ -8,8 +8,6 @@ import { verifyOtp, login } from '../api/auth';
 import { setAuthToken } from '../utils/auth';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
-
-
 interface ForgotPasswordScreenProps {
   navigation: any; // Replace with your proper navigation type
 }
@@ -23,7 +21,10 @@ const OTPValidation: React.FC<ForgotPasswordScreenProps> = ({ navigation }) => {
   const { loginId, email, password } = route.params as any;
   const [isLoading, setIsLoading] = useState<boolean>(false); // Add loading state
 
-  console.log(loginId, email, " loginId, email ");
+  const [user, domain] = email.split('@');
+  const starmailidcovenver = user.slice(0, 2) + '*'.repeat(user.length - 3) + user.slice(-1) + '@' + domain;
+
+  console.log(starmailidcovenver, email, " loginId, email ");
 
   // Initialize refs array
   useEffect(() => {
@@ -174,7 +175,7 @@ const OTPValidation: React.FC<ForgotPasswordScreenProps> = ({ navigation }) => {
         <Text style={styles.text}>
           We have sent a One-Time Password (OTP){'\n'}
           To your Registered Email Address{'\n'}
-          {email}
+          {starmailidcovenver}
         </Text>
 
         <Text style={styles.text}>

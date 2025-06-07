@@ -1,12 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaView, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaView, Alert, ActivityIndicator } from 'react-native';
 import ReactNativeBiometrics from 'react-native-biometrics';
 import { useNavigation } from '@react-navigation/native';
 import { login } from '../api/auth';
 
 const LoginScreen = () => {
-
   const navigation = useNavigation();
   const [email, setEmail] = useState('vijayalangaram.t@synergech.com');
   const [password, setPassword] = useState('Vijay@337890');
@@ -14,6 +13,7 @@ const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(true); // Now text will be visible
   const [isBiometricSupported, setIsBiometricSupported] = useState(false);
   const [biometricAttempted, setBiometricAttempted] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false); // Add loading state
 
   useEffect(() => {
     // checkBiometricSupport(); 
@@ -45,10 +45,11 @@ const LoginScreen = () => {
   // };
 
   const handleLogin = async () => {
-    // debugger 
+    // debugger
+    setIsLoading(true);
     try {
       const res = await login(email, password);
-      console.log(res, "res123")
+      // console.log(res, "res123")
       // console.warn("Something looks off!");
       if (res.data?.success && res.data?.result) {
         console.log(res.data, "res123")
@@ -63,6 +64,8 @@ const LoginScreen = () => {
     } catch (err) {
       console.error(err);
       Alert.alert('Login error', 'Something went wrong.');
+    } finally {
+      setIsLoading(false); // Stop loading regardless of success/error
     }
   };
 
@@ -132,6 +135,15 @@ const LoginScreen = () => {
           </TouchableOpacity>
         </View>
 
+        {/* Loading indicator */}
+        {isLoading && (
+          <ActivityIndicator
+            size="large"
+            color="#0071CF"
+            style={styles.loader}
+          />
+        )}
+
         {/* Below your passwordContainer */}
         <View style={styles.forgotPasswordContainer}>
           <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
@@ -178,6 +190,9 @@ const LoginScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  loader: {
+    marginVertical: 20,
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
