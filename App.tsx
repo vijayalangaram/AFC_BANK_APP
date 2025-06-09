@@ -11,6 +11,7 @@ import CustomDrawer from './src/components/CustomDrawer';
 import SummaryScreen from './src/screens/SummaryScreen';
 import Instructions from './src/screens/InstructionsScreen';
 import StatementScreen from './src/screens/StatementScreen';
+import PasswordRetypePassword from "./src/screens/PasswordRetypePassword"
 import { View, Text, FlatList, StyleSheet, Image } from 'react-native';
 import { navigationRef } from './src/api/axios'; // Import the ref from axios config
 
@@ -54,14 +55,15 @@ const App = () => {
     <SafeAreaProvider>
       <NavigationContainer ref={navigationRef}>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
+          {/* <Stack.Screen name="Login" component={LoginScreen} /> */}
           <Stack.Screen name="Login" component={LoginScreen} />
-          {/* <Stack.Screen name="Login" component={MainDrawer} /> */}
           <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
           <Stack.Screen name="WelcomeScreen" component={MainDrawer} />
           {/* <Stack.Screen name="WelcomeScreen" component={PortfolioScreen} options={{ headerShown: false }} /> */}
           <Stack.Screen name="OTPValidation" component={OTPValidation} />
           <Stack.Screen name="Instructions" component={MainDrawer} />
           <Stack.Screen name="Statement" component={StatementScreen} />
+          <Stack.Screen name="PasswordRetypePassword" component={PasswordRetypePassword} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

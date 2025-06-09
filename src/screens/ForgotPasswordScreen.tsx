@@ -8,6 +8,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import axios from 'axios';
 import { API_BASE_URL, ENDPOINTS } from '../config/constants';
 
+
 interface ForgotPasswordScreenProps {
   navigation: any; // Replace with your proper navigation type
 }
@@ -124,7 +125,10 @@ const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navigation 
       console.log(emailresverify.data, "res.data")
       if (emailresverify.data) {
         Alert.alert('Success', emailresverify.data.message || 'OTP Verified Successfully!');
-        // navigation.navigate('LoginScreen');      
+        // navigation.navigate('PasswordRetypePassword');
+        navigation.navigate('PasswordRetypePassword', {
+          email
+        });
       }
       else {
         Alert.alert('Invalid OTP', emailresverify.data.message || '');
@@ -138,8 +142,8 @@ const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navigation 
   };
 
   const handleResendOtp = async () => {
-    debugger
-    console.log(email, "res123")
+    // debugger
+    // console.log(email, "res123")
     setOtp(['', '', '', '', '', '']);
     setIsLoading(true);
     const emailresverify = await axios.post(`${API_BASE_URL}/user/email-verify`, {

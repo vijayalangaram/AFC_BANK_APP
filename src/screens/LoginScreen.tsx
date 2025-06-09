@@ -16,6 +16,8 @@ const LoginScreen = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false); // Add loading state
 
   useEffect(() => {
+    // debugger
+    // console.log("asdf")
     // checkBiometricSupport(); 
   }, []);
 
