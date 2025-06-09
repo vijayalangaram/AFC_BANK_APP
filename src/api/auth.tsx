@@ -13,3 +13,21 @@ export const verifyOtp = (id: string, email: string, code: string) =>
       actionType: 'For Login',
     },
   });
+
+export const emailverify = (email: string) =>
+  api.post(ENDPOINTS.EMAILVERIFY, {
+    email,
+    actionType: 'Reset password',
+  });
+
+export const verifyOtpResetPassword = (email: string, code: string) =>
+  api.post(ENDPOINTS.VERIFYOTPRESETPASSWORD, {
+    email,
+    code,
+    actionType: 'Reset password',
+  });
+
+
+
+
+

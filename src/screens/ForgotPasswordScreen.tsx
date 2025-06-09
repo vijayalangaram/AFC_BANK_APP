@@ -1,6 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, SafeAreaView, TextInput, Platform } from 'react-native';
+import {
+  View, Text, TouchableOpacity, StyleSheet, Image, SafeAreaView, TextInput, Platform, Clipboard,
+  ActivityIndicator, Alert
+} from 'react-native';
 import SMSRetriever, { SmsListenerEvent } from 'react-native-sms-retriever';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import axios from 'axios';
+import { API_BASE_URL, ENDPOINTS } from '../config/constants';
 
 interface ForgotPasswordScreenProps {
   navigation: any; // Replace with your proper navigation type
@@ -11,11 +17,34 @@ const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navigation 
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true);
   const [otpError, setOtpError] = useState<string>('');
   const otpInputRefs = useRef<Array<TextInput | null>>([]);
+  const route = useRoute();
+  const { loginId, email, password } = route.params as any;
+  const [isLoading, setIsLoading] = useState<boolean>(false); // Add loading state
+  const [user, domain] = email.split('@');
+  const starmailidcovenver = user.slice(0, 2) + '*'.repeat(user.length - 3) + user.slice(-1) + '@' + domain;
+
+  console.log(starmailidcovenver, email, " loginId, email ");
+
+  useEffect(() => {
+    handleResendOtp()
+  }, [email]);
 
   // Initialize refs array
   useEffect(() => {
     otpInputRefs.current = otpInputRefs.current.slice(0, otp.length);
   }, [otp]);
+
+  // Add this effect to automatically submit when last digit is entered
+  useEffect(() => {
+    const isComplete = otp.every(digit => digit !== '');
+    setIsButtonDisabled(!isComplete);
+    setOtpError('');
+    // Auto-submit when last digit is entered
+    if (isComplete && otp[5] !== '') {
+      handleVerifyOtp();
+    }
+  }, [otp]);
+
 
   // Check if OTP is complete
   useEffect(() => {
@@ -68,6 +97,11 @@ const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navigation 
       newOtp[index] = text;
       setOtp(newOtp);
 
+      // Move to next only if a single digit is entered
+      if (text.length === 1 && index < 5) {
+        otpInputRefs.current[index + 1]?.focus();
+      }
+
       // Auto focus to next input if a digit was entered
       if (text && index < 5) {
         otpInputRefs.current[index + 1]?.focus();
@@ -78,9 +112,44 @@ const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navigation 
         otpInputRefs.current[index - 1]?.focus();
       }
     }
-  }; 
-  const handleVerifyOtp = () => {
-    navigation.navigate('Login'); 
+  };
+
+  const handleVerifyOtp = async () => {
+    setIsLoading(true);
+    try {
+      const otpcombine = otp && otp.join('');
+      const emailresverify = await axios.post(`${API_BASE_URL}/otp/verify`, {
+        code: otpcombine, email, "actionType": "Reset password"
+      });
+      console.log(emailresverify.data, "res.data")
+      if (emailresverify.data) {
+        Alert.alert('Success', emailresverify.data.message || 'OTP Verified Successfully!');
+        // navigation.navigate('LoginScreen');      
+      }
+      else {
+        Alert.alert('Invalid OTP', emailresverify.data.message || '');
+      }
+    } catch (err) {
+      console.error(err);
+      Alert.alert('OTP Error', 'Verification failed.');
+    } finally {
+      setIsLoading(false); // Stop loading regardless of success/error
+    }
+  };
+
+  const handleResendOtp = async () => {
+    debugger
+    console.log(email, "res123")
+    setOtp(['', '', '', '', '', '']);
+    setIsLoading(true);
+    const emailresverify = await axios.post(`${API_BASE_URL}/user/email-verify`, {
+      email, "actionType": "Reset password"
+    });
+    console.log('OTP resend response:', emailresverify?.data?.success);
+    if (!emailresverify?.data?.success) {
+      Alert.alert('Try again later',);
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -90,12 +159,12 @@ const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navigation 
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.title}>Forget Password</Text>
+        <Text style={styles.title}>Forgot Password</Text>
 
         <Text style={styles.text}>
           We have sent a One-Time Password (OTP){'\n'}
           To your Registered Email Address{'\n'}
-          n******di@abc.com
+          {starmailidcovenver}
         </Text>
 
         <Text style={styles.text}>
@@ -108,7 +177,7 @@ const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navigation 
           {otp.map((digit, index) => (
             <TextInput
               key={index}
-              ref={(ref) => (otpInputRefs.current[index] = ref)} 
+              ref={(ref) => (otpInputRefs.current[index] = ref)}
               style={[styles.otpBox, otpError ? styles.otpBoxError : null]}
               value={digit}
               onChangeText={(text: string) => handleOtpChange(text, index)}
@@ -116,6 +185,7 @@ const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navigation 
               maxLength={1}
               textAlign="center"
               autoFocus={index === 0}
+              editable={!isLoading}
               onKeyPress={({ nativeEvent }) => {
                 if (nativeEvent.key === 'Backspace' && !digit && index > 0) {
                   otpInputRefs.current[index - 1]?.focus();
@@ -124,31 +194,53 @@ const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navigation 
             />
           ))}
         </View>
-        {otpError ? <Text style={styles.errorText}>{otpError}</Text> : null}
 
-        <TouchableOpacity>
+        {/* Loading indicator */}
+        {isLoading && (
+          <ActivityIndicator
+            size="large"
+            color="#0071CF"
+            style={styles.loader}
+          />
+        )}
+
+        {otpError ? <Text style={styles.errorText}>{otpError}</Text> : null}
+        <TouchableOpacity onPress={handleResendOtp}>
           <Text style={styles.resendText}>
             Didn't receive the OTP? <Text style={styles.resendLink}>Resend OTP</Text>
           </Text>
         </TouchableOpacity>
 
         <View style={styles.divider} />
-        <TouchableOpacity
-          style={[styles.loginButton, isButtonDisabled ? styles.disabledButton : null]}
-          onPress={handleVerifyOtp}
-          disabled={isButtonDisabled}
-        >
-          <Text style={styles.loginButtonText}>Verify OTP</Text>
-        </TouchableOpacity>
+        {!isLoading && (
+          <TouchableOpacity
+            style={[styles.loginButton, isButtonDisabled ? styles.disabledButton : null]}
+            onPress={handleVerifyOtp}
+            disabled={isButtonDisabled || isLoading}
+          >
+            <Text style={styles.loginButtonText}>Verify OTP</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </SafeAreaView>
   );
 };
-
 const styles = StyleSheet.create({
+  loader: {
+    marginVertical: 20,
+  },
+  loginButton: {
+    backgroundColor: '#0071CF',
+    height: 50,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    marginTop: 10, // Add some spacing 
+  },
   container: {
     flex: 1,
-    backgroundColor: '#fff', 
+    backgroundColor: '#fff',
   },
   contentimagetop: {
     padding: 10,
@@ -249,6 +341,4 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 });
-
-
 export default ForgotPasswordScreen;

@@ -39,10 +39,15 @@ const LoginScreen = () => {
     }
   };
 
-  // const handleLogin = () => {
-  //   // Your login logic here    
-  //   navigation.navigate('OTPValidation');
-  // };
+  const handleForgotPassword = async () => {
+    if (email) {
+      navigation.navigate('ForgotPassword', {
+        email
+      });
+    } else {
+      Alert.alert('Enter a valid Email');
+    }
+  }
 
   const handleLogin = async () => {
     // debugger
@@ -146,7 +151,7 @@ const LoginScreen = () => {
 
         {/* Below your passwordContainer */}
         <View style={styles.forgotPasswordContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+          <TouchableOpacity onPress={handleForgotPassword} >
             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>

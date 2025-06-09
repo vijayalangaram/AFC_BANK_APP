@@ -4,4 +4,6 @@ export const ENDPOINTS = {
   LOGIN: '/user/login',
   VERIFY_OTP: '/user/login-verify-otp',
   ACCOUNT_SUMMARY: '/account/account-summary',
+  EMAILVERIFY: "/otp/verify",
+  VERIFYOTPRESETPASSWORD: "otp/verify"
 };
