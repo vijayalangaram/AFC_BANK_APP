@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -10,10 +10,24 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useRoute } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SummaryScreen = ({ route }) => {
   const navigation = useNavigation();
+  const [accountId, setAccountId] = useState<string | null>(null); // Store the accountId in state
+
+  useEffect(() => {
+    const fetchAccountId = async () => {
+      try {
+        const storedAccountId = await AsyncStorage.getItem('accountId');
+        console.log("Retrieved accountId:", storedAccountId); // Should log "7438791501008"
+        setAccountId(storedAccountId);
+      } catch (err) {
+        console.error("Failed to fetch accountId:", err);
+      }
+    };
+    fetchAccountId();
+  }, []);
 
   // const route = useRoute();
   // const { account } = route.params;
@@ -126,7 +140,7 @@ const SummaryScreen = ({ route }) => {
           </View>
         ))}
 
-        {/* Bottom Tabs */} 
+        {/* Bottom Tabs */}
         <View style={styles.tabBar}>
           <Tab label="Summary" active />
           {/* <Tab label="Instructions" /> */}

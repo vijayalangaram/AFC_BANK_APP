@@ -4,6 +4,8 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaVie
 import ReactNativeBiometrics from 'react-native-biometrics';
 import { useNavigation } from '@react-navigation/native';
 import { login } from '../api/auth';
+import { fetchAccountSummary } from '../api/account';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -17,9 +19,41 @@ const LoginScreen = () => {
 
   useEffect(() => {
     // debugger
-    // console.log("asdf")
-    // checkBiometricSupport(); 
+    tokencheck();
   }, []);
+
+  // const tokencheck = async () => {
+  //   debugger
+  //   const res = await fetchAccountSummary();
+  //   console.log(res?.status, "WelcomeScreen");
+  //   const token = await AsyncStorage.getItem('authToken');
+  //   console.log(token, "WelcomeScreen");
+  //   res?.status === 200 &&
+  //     navigation.reset({
+  //       index: 0,
+  //       routes: [{ name: 'WelcomeScreen' }],
+  //     });
+  // }
+
+  const tokencheck = async () => {
+    debugger
+    const token = await AsyncStorage.getItem('authToken');
+    console.log(token, "WelcomeScreen");
+    if (!token) return; // Don't proceed if no token exists
+    try {
+      const res = await fetchAccountSummary();
+      console.log(res?.status, "WelcomeScreen");
+      if (res?.status === 200) {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'WelcomeScreen' }],
+        });
+      }
+    } catch (error) {
+      // Handle any errors (including 401 which will be caught by interceptor)
+      console.log("Token check error:", error);
+    }
+  }
 
   useEffect(() => {
     if (isBiometricSupported && !biometricAttempted) {

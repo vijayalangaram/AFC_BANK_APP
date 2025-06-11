@@ -56,9 +56,9 @@ const App = () => {
       <NavigationContainer ref={navigationRef}>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {/* <Stack.Screen name="Login" component={LoginScreen} /> */}
+          <Stack.Screen name="WelcomeScreen" component={MainDrawer} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-          <Stack.Screen name="WelcomeScreen" component={MainDrawer} />
           {/* <Stack.Screen name="WelcomeScreen" component={PortfolioScreen} options={{ headerShown: false }} /> */}
           <Stack.Screen name="OTPValidation" component={OTPValidation} />
           <Stack.Screen name="Instructions" component={MainDrawer} />

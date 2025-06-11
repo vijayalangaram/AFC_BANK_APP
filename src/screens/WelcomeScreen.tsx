@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HEADER_HEIGHT = 84;
 
@@ -239,7 +240,7 @@ const AccountCard = ({ item, onPress }) => (
     {/* Arrow in top right corner */}
     <View style={styles.topRightArrow}>
       <Text style={styles.arrow}>→</Text>
-       {/* <Text >></Text> */}
+      {/* <Text >></Text> */}
     </View>
 
     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -293,14 +294,23 @@ export default function PortfolioScreen() {
         console.error('Fetch error', err);
       }
     };
-
     getData();
   }, []);
+
+  const SummaryScreenValidation = async (item: any) => {
+    // debugger 
+    // navigation.navigate('Login');
+    const setAuthToken = await AsyncStorage.setItem('accountId', item?.accountId);
+    console.log("item", item?.accountId, setAuthToken);
+    navigation.navigate('SummaryScreen', {
+      account: item
+    });
+  };
+
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#002A5C" />
-
       {/* Fixed Header */}
       <View style={[styles.fixedHeader, { paddingTop: statusBarHeight }]}>
         <TouchableOpacity onPress={() => navigation.openDrawer()}>
@@ -333,7 +343,8 @@ export default function PortfolioScreen() {
           renderItem={({ item }) => (
             <AccountCard
               item={item}
-              onPress={() => navigation.navigate('SummaryScreen', { account: item })}
+              onPress={() => SummaryScreenValidation(item)} // Fixed: Now only runs on press
+            // onPress={SummaryScreenValidation(item)}
             />
           )}
         />

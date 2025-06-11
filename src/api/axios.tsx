@@ -5,8 +5,11 @@ import { API_BASE_URL } from '../config/constants';
 import { Alert } from 'react-native';
 import { NavigationContainerRef } from '@react-navigation/native';
 
+
 // Create a ref to hold the navigation object
-export const navigationRef = React.createRef();
+// export const navigationRef = React.createRef();
+export const navigationRef = React.createRef<NavigationContainerRef<any>>();
+
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -35,15 +38,30 @@ api.interceptors.response.use(
       Alert.alert('Session Expired', 'Please click OK to login again.', [
         {
           text: 'OK',
+          // onPress: () => {
+          //   // Navigate to Login screen if navigationRef is available
+          //   if (navigationRef.current) {
+          //     navigationRef.current.reset({
+          //       index: 0,
+          //       routes: [{ name: 'Login' }],
+          //     });
+          //   }
+          // },
           onPress: () => {
-            // Navigate to Login screen if navigationRef is available
-            if (navigationRef.current) {
-              navigationRef.current.reset({
+            const currentRoute = navigationRef.current?.getCurrentRoute()?.name;
+            if (currentRoute !== 'Login') {
+              navigationRef.current?.reset({
                 index: 0,
                 routes: [{ name: 'Login' }],
               });
             }
-          },
+            // if (navigationRef.current?.getCurrentRoute()?.name !== 'Login') {
+            //   navigationRef.current.reset({
+            //     index: 0,
+            //     routes: [{ name: 'Login' }],
+            //   });
+            // }
+          }
         },
       ]);
     }
