@@ -5,5 +5,7 @@ export const ENDPOINTS = {
   VERIFY_OTP: '/user/login-verify-otp',
   ACCOUNT_SUMMARY: '/account/account-summary',
   EMAILVERIFY: "/otp/verify",
-  VERIFYOTPRESETPASSWORD: "otp/verify"
-};
+  VERIFYOTPRESETPASSWORD: "otp/verify",
+  CARD_DISPLAY_DETAILS: '/account/card-display-details',
+  WITHDRAW_DETAILS: "/withdraw-instruction/withdrawl-history-filter"
+}; 

@@ -28,7 +28,7 @@ function MainDrawer() {
         <Drawer.Screen name="Portfolio" component={PortfolioScreen} />
         <Stack.Screen name="SummaryScreen" component={SummaryScreen} />
         <Stack.Screen name="Instructions" component={Instructions} />
-      </Drawer.Navigator>
+      </Drawer.Navigator> 
     </>
   );
 }

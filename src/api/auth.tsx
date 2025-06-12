@@ -28,6 +28,16 @@ export const verifyOtpResetPassword = (email: string, code: string) =>
   });
 
 
+export const getCardDisplayDetails = (accountNumber: string) =>
+  api.get(`${ENDPOINTS.CARD_DISPLAY_DETAILS}?accountNumber=${accountNumber}`);
+
+export const withdrawlhistory = (accountNumber: string, startDate: string, endDate: string) =>
+  api.get(`${ENDPOINTS.WITHDRAW_DETAILS}?accountNumber=${accountNumber}`);
+
+
+
+
+
 
 
 
