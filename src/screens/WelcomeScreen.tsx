@@ -246,7 +246,7 @@ const AccountCard = ({ item, onPress }) => (
     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
       <View style={styles.accountInfo}>
         <Text style={styles.name} numberOfLines={4} ellipsizeMode="tail">
-          {item.countryName}
+          {item.accountName}
         </Text>
         <Text style={styles.subtext}>{item.accountId}- ({item.currencyType})</Text>
         <Text style={styles.debitLabel}>Total Debits</Text>
